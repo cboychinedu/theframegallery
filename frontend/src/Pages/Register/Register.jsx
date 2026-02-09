@@ -2,41 +2,180 @@
 import { Fragment, useState } from 'react';
 import Footer from '@components/Footer/Footer';
 import Navbar from '@components/Navbar/Navbar';
+import { useNavigate } from 'react-router-dom';
 import AlertBox from '../../Components/AlertBox/AlertBox';
 import { Mail, Lock, ArrowRight, User, Instagram } from 'lucide-react';
 
 // Creating the register component 
 const Register = () => {
+    // Initializing the navigate hook 
+    const navigate = useNavigate(); 
+
     // State for the alert visibility and messaging
     const [showAlert, setShowAlert] = useState(false);
     const [status, setStatus] = useState(null); 
     const [alertMessage, setAlertMessage] = useState(null); 
 
     // Setting the state for the registration fields 
-    const [fullName, setFullName] = useState("");
+    const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
     const [confirmPassword, setConfirmPassword] = useState("");
 
     // Function to handle form submission
-    const handleRegister = (event) => {
+    const handleRegister = async (event) => {
         // Prevent default submission 
         event.preventDefault();
 
-        // Basic validation logic
-        if (password !== confirmPassword) {
-            setAlertMessage("Passwords do not match"); 
-            setStatus("error"); 
-        } else {
-            setAlertMessage("Account created successfully!"); 
-            setStatus("success"); 
+        // Checking the fullname 
+        if (fullname === "") {
+            // Showing the alert box 
+            setAlertMessage("Fullname is required!"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto-hide alert after 5 seconds
+            setTimeout(() => setShowAlert(false), 5000);
+            return; 
         }
 
-        setShowAlert(true);
-        // Auto-hide alert after 4 seconds
-        setTimeout(() => setShowAlert(false), 4000);
+        // Checking the email 
+        else if (email === "" || !email.includes("@")) {
+            // Showing the alert box 
+            setAlertMessage("Email address is required!"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto hide the alert after 5 seconds 
+            setTimeout(() => setShowAlert(false), 5000); 
+            return;
+        }
+
+        // Checking the password 
+        else if (password.trim() === "") {
+            // Showing the alert box 
+            setAlertMessage("Password is required!"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto hide the alert after 5 seconds 
+            setTimeout(() => setShowAlert(false), 5000); 
+            return;
+        }
+
+        // Checking the confirm password 
+        else if (confirmPassword.trim() === "") {
+            // Showing the alert box 
+            setAlertMessage("Please retype your password to confirm it!"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto hide the alert after 5 seconds 
+            setTimeout(() => setShowAlert(false), 5000); 
+            return;
+        }
+
+        // Checking if the password match 
+        else if (password.trim() !== confirmPassword.trim()) {
+            // Showing the alert box 
+            setAlertMessage("Passwords do not match"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto hide the alert after 5 seconds 
+            setTimeout(() => setShowAlert(false), 5000); 
+            return;
+        }
+
+        // Else if all validations pass, execute this block of code below 
+        else {
+            // Getting the registration data 
+            const registrationData = JSON.stringify({
+                fullname: fullname.trim(), 
+                email: email.trim(), 
+                password: password.trim()
+            }); 
+
+            // Setting the backend server url 
+            const serverUrl = `${import.meta.env.VITE_SERVER_URL}/register`; 
+
+            // Using try catch block to send the request tot he backend server 
+            try {
+                // Making the request to the register route 
+                const response = await fetch(serverUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: registrationData
+                }); 
+
+                // if there was no response from the server 
+                if (!response.ok) {
+                    // Handle the server side error 
+                    const errorData = await response.json(); 
+
+                    // Display the error message 
+                    setAlertMessage(errorData.message || "Registration failed!"); 
+                    setStatus("Error");
+                    setShowAlert(true); 
+
+                    // Auto hide the alert after 5 seconds 
+                    setTimeout(() => setShowAlert(false), 5000); 
+                    return; 
+                }
+
+                // Else if the server returned a response, get the response 
+                // and save it into the response data variable 
+                const responseData = await response.json(); 
+
+                // if the user was registered, execute this block of code 
+                if (responseData.status === "success") {
+                    // Display the status message 
+                    setAlertMessage(responseData.message); 
+                    setStatus("Success"); 
+                    setShowAlert(true); 
+
+                    // Auto hide, and navigate the user to the login page 
+                    setTimeout(() => {
+                        // Hide the message 
+                        setShowAlert(false); 
+
+                        // Navigate the user to the login page 
+                        navigate("/login"); 
+                    }, 6000)
+
+                }
+
+                // Else if the response data was an error 
+                else {
+                    // Display the status message 
+                    setAlertMessage(responseData.message); 
+                    setStatus("Error"); 
+                    setShowAlert(true); 
+
+                    // Auto hide the error after 7 mins 
+                    setTimeout(() => setShowAlert(false), 7000); 
+                    return; 
+                }
+            }   
+
+            // Catching the error 
+            catch (error) {
+                // Log the error to the console 
+                console.log("Error: ", error.message); 
+
+                // Display the error message 
+                setAlertMessage("Error connecting to the server!"); 
+                setStatus("Error"); 
+                setShowAlert(true); 
+
+                //Auto hide the error after 7 mins (Error displays should last longer) 
+                setTimeout(() => setShowAlert(false), 7000); 
+                return; 
+            }
+        }
     };
 
+    // Rendering the jsx component 
     return (
         <Fragment> 
             <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative overflow-x-hidden">
@@ -90,7 +229,7 @@ const Register = () => {
                                             required
                                             className="block w-full pl-11 pr-4 py-4 bg-white border border-stone-200 rounded-2xl focus:ring-2 focus:ring-amber-700 focus:border-transparent transition-all outline-none shadow-sm"
                                             placeholder="Amy Johnson"
-                                            onChange={(event) => setFullName(event.target.value)}
+                                            onChange={(event) => setFullname(event.target.value)}
                                         />
                                     </div>
                                 </div>

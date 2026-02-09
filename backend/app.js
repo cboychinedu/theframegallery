@@ -2,14 +2,17 @@
 import chalk from 'chalk'; 
 import express from 'express'
 import cors from 'cors'; 
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import dotenv from 'dotenv'; 
 import mongodb from 'mongoose'; 
+import 'module-alias/register.js';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import accessLogStream from './logs/logger.js';
 import corsOptions from './corsConfig/corsConfig.js';
 
+// Importing the routes
+import home from "#routes/homeRoutes.js"; 
 
 // Loading the env variables 
 dotenv.config(); 
@@ -40,8 +43,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('combined', { stream: accessLogStream, immediate: true }));
 
 // Setting the host 
-const HOST = process.env.HOST || "localhost"; 
+const HOST = process.env.HOST || "0.0.0.0"; 
 const PORT = process.env.PORT || 3001;
+
+// Setting up the routes
+app.use('/', home);
 
 // Starting the server
 app.listen(PORT, HOST, () => {

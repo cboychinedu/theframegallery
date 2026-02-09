@@ -2,8 +2,6 @@
 import { useState, Fragment } from 'react';
 import Navbar from '@components/Navbar/Navbar';
 import Footer from '@components/Footer/Footer';
-// Import the new Modal component
-import CustomRequestModal from './CustomRequestModal'; 
 import { 
   MessageSquare, 
   Settings, 
@@ -32,19 +30,10 @@ const Dashboard = () => {
     }
   ]);
 
-  // NEW: State for controlling the Custom Request Modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <Fragment>
       <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative">
         <Navbar />
-
-        {/* NEW: Custom Request Modal Integration */}
-        <CustomRequestModal 
-            isOpen={isModalOpen} 
-            onClose={() => setIsModalOpen(false)} 
-        />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
           {/* Dashboard Header */}
@@ -56,7 +45,6 @@ const Dashboard = () => {
             
             {/* UPDATED: Button now opens the modal */}
             <button 
-              onClick={() => setIsModalOpen(true)}
               className="bg-stone-900 text-white px-8 py-4 rounded-full font-bold hover:bg-amber-800 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
             >
               <Plus size={20} /> New Custom Request

@@ -6,6 +6,12 @@
   "author": "Mbonu Chinedum",
   "type": "module",
   "main": "app.js",
+  "imports": {
+    "#root/*": "./*",
+    "#routes/*": "./routes/*",
+    "#models/*": "./models/*", 
+    "#rateLimiter/*": "./rateLimiter/*"
+  },
   "scripts": {
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,6 +26,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.2",
     "mongoose": "^8.19.3",
     "morgan": "^1.10.1"
   }
