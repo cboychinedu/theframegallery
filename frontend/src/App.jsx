@@ -10,6 +10,8 @@ import Services from './Pages/Services/Services';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import ErrorPage from './Pages/ErrorPage/ErrorPage';
+import Dashboard from './Pages/Dashboard/Dashboard';
+import CustomRequestModal from './Pages/CustomFrame/CustomFrame';
 
 
 // Creating the app component 
@@ -27,6 +29,8 @@ class App extends Component {
             <Route path="/contact" element={<Contact /> } /> 
             <Route path="/login" element={<Login /> } /> 
             <Route path="/register" element={<Register /> } /> 
+            <Route path="/dashboard" element={<Dashboard /> } /> 
+            <Route path="/custom-frame" element={<CustomRequestModal /> } /> 
             <Route path="*" element={<ErrorPage /> } /> 
           </Routes>
         </BrowserRouter>
