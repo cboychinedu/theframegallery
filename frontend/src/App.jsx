@@ -1,4 +1,6 @@
 // Importing the necessary modules 
+import Cookies from 'js-cookie'; 
+import { jwtDecode } from 'jwt-decode';
 import { Component, Fragment } from 'react'; 
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
@@ -18,6 +20,24 @@ import CustomRequestModal from './Pages/CustomFrame/CustomFrame';
 class App extends Component {
   // Rendering the component 
   render() {
+    // Getting the user cookie 
+    const userCookie = Cookies.get('userToken'); 
+    let isLoggedIn; 
+
+    // Checking if the user cookie is present 
+    if (userCookie) {
+      // Decoding the user cookie 
+      let decodedToken = jwtDecode(userCookie); 
+      isLoggedIn = decodedToken.isLoggedIn; 
+
+    }
+
+    // If the user token is not present, execute the block 
+    // of code below 
+    else {
+      isLoggedIn = false; 
+    }
+
     // Returning the jsx component 
     return(
       <Fragment> 
@@ -27,10 +47,22 @@ class App extends Component {
             <Route path="/about" element={<About /> } /> 
             <Route path="/services" element={<Services /> } /> 
             <Route path="/contact" element={<Contact /> } /> 
-            <Route path="/login" element={<Login /> } /> 
-            <Route path="/register" element={<Register /> } /> 
-            <Route path="/dashboard" element={<Dashboard /> } /> 
-            <Route path="/custom-frame" element={<CustomRequestModal /> } /> 
+            <Route 
+              path="/login" 
+              element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Login /> } 
+            /> 
+            <Route 
+              path="/register" 
+              element={isLoggedIn ? <Navigate to="/dashboard" replace />: <Register /> } 
+            /> 
+            <Route 
+              path="/dashboard" 
+              element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" replace /> } 
+            /> 
+            <Route 
+              path="/dashboard/custom-frame" 
+              element={isLoggedIn ? <CustomRequestModal /> : <Navigate to="/login" replace /> } 
+            /> 
             <Route path="*" element={<ErrorPage /> } /> 
           </Routes>
         </BrowserRouter>

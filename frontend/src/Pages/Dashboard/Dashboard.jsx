@@ -2,6 +2,7 @@
 import { useState, Fragment } from 'react';
 import Navbar from '@components/Navbar/Navbar';
 import Footer from '@components/Footer/Footer';
+import { useNavigate } from 'react-router-dom';
 import { 
   MessageSquare, 
   Settings, 
@@ -12,6 +13,9 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
+  // Creating the navigation 
+  const navigate = useNavigate(); 
+  
   // State for the project management
   const [projects] = useState([
     {
@@ -45,6 +49,7 @@ const Dashboard = () => {
             
             {/* UPDATED: Button now opens the modal */}
             <button 
+              onClick={() => navigate('/dashboard/custom-frame')}
               className="bg-stone-900 text-white px-8 py-4 rounded-full font-bold hover:bg-amber-800 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
             >
               <Plus size={20} /> New Custom Request

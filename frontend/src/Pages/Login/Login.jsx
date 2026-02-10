@@ -1,12 +1,17 @@
 // Importing the necessary modules 
+import Cookies from 'js-cookie';
 import { Fragment, useState } from 'react';
 import Footer from '@components/Footer/Footer';
 import Navbar from '@components/Navbar/Navbar';
-import AlertBox from '../../Components/AlertBox/AlertBox';
+import AlertBox from '@components/AlertBox/AlertBox';
+import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Instagram } from 'lucide-react';
 
 // Creating the login component 
 const Login = () => {
+    // Initailzing the navigate hook 
+    const navigate = useNavigate(); 
+
     // State for the alert visibility
     const [showAlert, setShowAlert] = useState(false);
     const [status, setStatus] = useState(null); 
@@ -17,16 +22,126 @@ const Login = () => {
     const [password, setPassword] = useState(""); 
 
     // Function to handle form submission
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         // Prevent defualt submission 
         event.preventDefault();
-        setAlertMessage("Hello User"); 
-        setStatus("error"); 
-        setShowAlert(true);
-        // Auto-hide alert after 4 seconds
-        setTimeout(() => setShowAlert(false), 4000);
+
+        // Checking the email address 
+        if (email === "" || !email.includes("@")) {
+            // Showing the alert box 
+            setAlertMessage("Email addres is required!"); 
+            setStatus("Info"); 
+            setShowAlert(true); 
+
+            // Auto hide the alert after 6 seconds 
+            setTimeout(() => setShowAlert(false), 6000); 
+            return; 
+        }
+
+        // Checking the password 
+        else if (password.trim() === "") {
+            // Showing the alert box 
+            setAlertMessage("Password is required!"); 
+            setStatus("Info")
+            setShowAlert(true); 
+
+            // Auto hide the alert after 6 seconds 
+            setTimeout(() => setShowAlert(false), 6000); 
+            return; 
+        }
+
+        // Else if all validations pass, execute this block of code below 
+        else {
+            // Getting the login data 
+            const loginData = JSON.stringify({
+                email: email.trim(), 
+                password: password.trim()
+            }); 
+
+            // Setting the backend server url for login
+            const serverUrl = `${import.meta.env.VITE_SERVER_URL}/login`; 
+
+            // Using try catch block to send the request to the backend server 
+            try {
+                // Making the request to the login route 
+                const response = await fetch(serverUrl, {
+                    method:'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: loginData
+                }); 
+
+                // if there was no response from the server 
+                if (!response.ok) {
+                    // Handle the server side error 
+                    const errorData = await response.json(); 
+
+                    // Display the error message 
+                    setAlertMessage(errorData.message || "Login failed!"); 
+                    setStatus("Error"); 
+                    setShowAlert(true); 
+
+                    // Auto hide the alert after 5 seconds 
+                    setTimeout(() => setShowAlert(false), 5000); 
+                    return; 
+                }
+
+                // Else if the server returned a response, get the response message 
+                // and save it into the response data variable 
+                const responseData = await response.json(); 
+
+                // If the user was registered, execute this block of code below 
+                if (responseData.status === "success") {
+                    // Display the status message 
+                    setAlertMessage(responseData.message); 
+                    setStatus("Success"); 
+                    setShowAlert(true); 
+
+                    // Save the token inside the cookie 
+                    Cookies.set('userToken', responseData.token, { expires: 1 });
+                    console.log(responseData); 
+
+                    // Auto hide, and navigate the user to the dashboard page 
+                    setTimeout(() => {
+                        // Hide the message 
+                        setShowAlert(false); 
+
+                        // Navigate the user to the dashboard page 
+                        navigate('/dashboard'); 
+                    }, 5000); 
+                }
+
+                // Else if the response data was an error 
+                else {
+                    // Display the status message 
+                    setAlertMessage(responseData.message); 
+                    setStatus("Error"); 
+                    setShowAlert(true); 
+
+                    // Auto hide the error after 7 mins 
+                    setTimeout(() => setShowAlert(false), 7000); 
+                    return; 
+                }
+            }
+
+            // Catch the error 
+            catch (error) {
+                // Log the error to the console 
+                console.log("Error: ", error.message); 
+
+                // Display the error message 
+                setAlertMessage("Error connecting to the server!"); 
+                setStatus("Error"); 
+                setShowAlert(true); 
+
+                // Auto hide the error after 7 mins (Error displays should last longer)
+                setTimeout(() => setShowAlert(false), 7000); 
+                return; 
+
+            }
+        }
     };
 
+    // Rendering the jsx component 
     return (
         <Fragment> 
             <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative overflow-x-hidden">

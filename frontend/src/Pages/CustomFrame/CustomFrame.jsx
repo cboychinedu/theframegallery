@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { X, Ruler, Check, ArrowLeft } from 'lucide-react';
 
+// Creating the custom request page 
 const CustomRequestPage = ({ onBack }) => {
+  // Creating the navigation hook 
+  const navigate = useNavigate(); 
+
+  // Setting the state 
   const [selectedFrameId, setSelectedFrameId] = useState(null);
   const [selections, setSelections] = useState({
     glass: 'With Glass',
@@ -35,7 +41,7 @@ const CustomRequestPage = ({ onBack }) => {
       {/* Top Navigation Bar */}
       <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-stone-100 px-6 py-4 flex items-center justify-between">
         <button 
-          onClick={onBack}
+          onClick={() => {navigate('/dashboard')}}
           className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors font-medium"
         >
           <ArrowLeft size={20} /> Back to Dashboard

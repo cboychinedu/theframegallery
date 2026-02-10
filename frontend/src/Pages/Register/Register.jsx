@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react';
 import Footer from '@components/Footer/Footer';
 import Navbar from '@components/Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
-import AlertBox from '../../Components/AlertBox/AlertBox';
+import AlertBox from '@components/AlertBox/AlertBox';
 import { Mail, Lock, ArrowRight, User, Instagram } from 'lucide-react';
 
 // Creating the register component 
@@ -96,10 +96,10 @@ const Register = () => {
                 password: password.trim()
             }); 
 
-            // Setting the backend server url 
+            // Setting the backend server url for register 
             const serverUrl = `${import.meta.env.VITE_SERVER_URL}/register`; 
 
-            // Using try catch block to send the request tot he backend server 
+            // Using try catch block to send the request to the backend server 
             try {
                 // Making the request to the register route 
                 const response = await fetch(serverUrl, {
@@ -168,7 +168,7 @@ const Register = () => {
                 setStatus("Error"); 
                 setShowAlert(true); 
 
-                //Auto hide the error after 7 mins (Error displays should last longer) 
+                // Auto hide the error after 7 mins (Error displays should last longer) 
                 setTimeout(() => setShowAlert(false), 7000); 
                 return; 
             }

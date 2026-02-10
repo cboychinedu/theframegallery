@@ -17,7 +17,7 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); 
 
     // Getting the user cookie 
-    const userCookie = Cookies.get('userTokenData');
+    const userCookie = Cookies.get('userToken');
     let isLoggedIn = false; 
 
     // Logic to check authentication status
@@ -33,7 +33,7 @@ const Navbar = () => {
 
     // Function to handle logout
     const handleLogout = () => {
-        Cookies.remove("userTokenData"); 
+        Cookies.remove("userToken"); 
         // Small delay for UX before redirecting
         setTimeout(() => {
             window.location.href = "/";  
