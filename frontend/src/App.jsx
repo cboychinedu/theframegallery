@@ -14,6 +14,7 @@ import Register from './Pages/Register/Register';
 import ErrorPage from './Pages/ErrorPage/ErrorPage';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import CustomRequestModal from './Pages/CustomFrame/CustomFrame';
+import TermsAndConditions from './Pages/TermsAndConditions/TermsAndConditions';
 
 
 // Creating the app component 
@@ -54,6 +55,10 @@ class App extends Component {
             <Route 
               path="/register" 
               element={isLoggedIn ? <Navigate to="/dashboard" replace />: <Register /> } 
+            /> 
+            <Route 
+              path="/terms"
+              element={isLoggedIn ? <Navigate to="/dashboard" replace />: <TermsAndConditions /> }
             /> 
             <Route 
               path="/dashboard" 

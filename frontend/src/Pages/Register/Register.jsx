@@ -294,7 +294,7 @@ const Register = () => {
                                         className="h-4 w-4 text-amber-700 focus:ring-amber-700 border-stone-300 rounded" 
                                     />
                                     <label htmlFor="terms" className="ml-2 block text-sm text-stone-600">
-                                        I agree to the <a href="#" className="text-amber-800 underline">Terms and Conditions</a>
+                                        I agree to the <a href="/terms" className="text-amber-800 underline">Terms and Conditions</a>
                                     </label>
                                 </div>
 
