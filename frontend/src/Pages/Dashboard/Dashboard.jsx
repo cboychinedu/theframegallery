@@ -1,8 +1,9 @@
 // Importing the necessary modules 
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import Navbar from '@components/Navbar/Navbar';
 import Footer from '@components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; 
 import { 
   MessageSquare, 
   Settings, 
@@ -11,10 +12,44 @@ import {
   Plus, 
   Clock
 } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 
 const Dashboard = () => {
   // Creating the navigation 
   const navigate = useNavigate(); 
+
+  // Fullanme
+  const [fullname, setFullname] = useState("Guest");
+
+  // Creating a function for updating the user's fullname 
+  const updateFullname = () => {
+    // Using try catch block to decode the token 
+    try {
+      // Decoding the user's cookie 
+      const userCookie = Cookies.get("userToken"); 
+
+      // Checking if the user cookie is present 
+      if (userCookie) {
+        // Decode the user cookie 
+        let decodedToken = jwtDecode(userCookie); 
+
+        // Setting the state 
+        setFullname(decodedToken.fullname); 
+      }
+    }
+
+    // Catch the error 
+    catch (error) {
+      // If the token is not valid, execute the block of code below 
+      // Remove the token 
+      Cookies.remove('userToken'); 
+
+      // Redirect the user to the login page 
+      window.location.href = "/login"; 
+      
+    }
+
+  } 
   
   // State for the project management
   const [projects] = useState([
@@ -34,6 +69,12 @@ const Dashboard = () => {
     }
   ]);
 
+  // Creating a hook for updating the user's fullname 
+  useEffect(() => {
+    // Updating the user fullname 
+    updateFullname(); 
+  }, [])
+
   return (
     <Fragment>
       <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative">
@@ -44,7 +85,7 @@ const Dashboard = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
               <h1 className="text-4xl font-serif mb-2">My Creative Studio</h1>
-              <p className="text-stone-500 italic">Where your memories take their final form.</p>
+              <p className="text-stone-500 italic">Hello, {fullname}. This is Where your memories take their final form.</p>
             </div>
             
             {/* UPDATED: Button now opens the modal */}

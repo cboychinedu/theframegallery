@@ -36,7 +36,7 @@ const Navbar = () => {
         Cookies.remove("userToken"); 
         // Small delay for UX before redirecting
         setTimeout(() => {
-            window.location.href = "/";  
+            window.location.href = "/login";  
         }, 1000); 
     }
 

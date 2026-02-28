@@ -109,6 +109,7 @@ router.post('/login', apiLimiter, async (req, res) => {
                 const payload = {
                     userId: user._id, 
                     email: user.email, 
+                    fullname: user.fullname, 
                     isLoggedIn: true
                 }; 
 

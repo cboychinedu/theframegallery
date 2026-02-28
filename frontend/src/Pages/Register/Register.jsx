@@ -140,7 +140,8 @@ const Register = () => {
                         setShowAlert(false); 
 
                         // Navigate the user to the login page 
-                        navigate("/login"); 
+                        window.location.href = "/login"; 
+                        // navigate("/login"); 
                     }, 6000)
 
                 }

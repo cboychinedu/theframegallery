@@ -106,7 +106,8 @@ const Login = () => {
                         setShowAlert(false); 
 
                         // Navigate the user to the dashboard page 
-                        navigate('/dashboard'); 
+                        window.location.href = "/dashboard"; 
+                        // navigate('/dashboard'); 
                     }, 5000); 
                 }
 
